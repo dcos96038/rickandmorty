@@ -1,20 +1,34 @@
 import {createStackNavigator} from "@react-navigation/stack";
+import React, {useContext} from "react";
 
+import {AuthContext} from "../context/AuthContext";
+import HomePage from "../screens/HomePage";
+import LoadingScreen from "../screens/LoadingScreen";
 import LoginScreen from "../screens/LoginScreen";
-import RegisterScreen from "../screens/RegisterScreen";
 
 export type RootStackParams = {
   Login: undefined;
-  Register: undefined;
+  Home: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParams>();
 
 export const StackNavigator = () => {
+  const {status} = useContext(AuthContext);
+
+  if (status === "checking") return <LoadingScreen />;
+
   return (
-    <Stack.Navigator>
-      <Stack.Screen component={LoginScreen} name="Login" />
-      <Stack.Screen component={RegisterScreen} name="Register" />
+    <Stack.Navigator screenOptions={{headerShown: false}}>
+      {status !== "authenticated" ? (
+        <>
+          <Stack.Screen component={LoginScreen} name="Login" />
+        </>
+      ) : (
+        <>
+          <Stack.Screen component={HomePage} name="Home" />
+        </>
+      )}
     </Stack.Navigator>
   );
 };
