@@ -2,13 +2,14 @@ import {createStackNavigator} from "@react-navigation/stack";
 import React, {useContext} from "react";
 
 import {AuthContext} from "../context/AuthContext";
-import HomePage from "../screens/HomePage";
 import LoadingScreen from "../screens/LoadingScreen";
 import LoginScreen from "../screens/LoginScreen";
 
+import {CharactersNavigator} from "./CharactersNavigator";
+
 export type RootStackParams = {
   Login: undefined;
-  Home: undefined;
+  CharacterNavigator: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParams>();
@@ -26,7 +27,7 @@ export const StackNavigator = () => {
         </>
       ) : (
         <>
-          <Stack.Screen component={HomePage} name="Home" />
+          <Stack.Screen component={CharactersNavigator} name="CharacterNavigator" />
         </>
       )}
     </Stack.Navigator>

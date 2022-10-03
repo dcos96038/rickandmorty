@@ -3,7 +3,6 @@ export interface AuthState {
   userId: string | null;
   errorMsg: string;
   username: string | null;
-  loading: boolean;
 }
 
 export type AuthAction =

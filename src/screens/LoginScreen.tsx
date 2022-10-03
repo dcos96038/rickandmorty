@@ -20,7 +20,7 @@ const LoginScreen = ({}: Props) => {
   useEffect(() => {
     if (errorMsg.length === 0) return;
     Alert.alert("Login incorrecto", errorMsg, [{text: "Ok", onPress: () => removeError()}]);
-  }, [errorMsg]);
+  }, [errorMsg, removeError]);
 
   const onLogin = () => {
     signIn({email, password});

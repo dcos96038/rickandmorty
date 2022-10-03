@@ -15,7 +15,6 @@ interface AuthContextProps {
   username: string | null;
   userId: string | null;
   status: "checking" | "authenticated" | "not-authenticated";
-  loading: boolean;
   signIn: (obj: LoginForm) => void;
   logout: () => void;
   removeError: () => void;
@@ -26,7 +25,6 @@ const authInitialState: AuthState = {
   userId: null,
   username: null,
   errorMsg: "",
-  loading: false,
 };
 
 export const AuthContext = createContext({} as AuthContextProps);
