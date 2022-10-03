@@ -5,11 +5,11 @@ import {AuthContext} from "../context/AuthContext";
 import LoadingScreen from "../screens/LoadingScreen";
 import LoginScreen from "../screens/LoginScreen";
 
-import {CharactersNavigator} from "./CharactersNavigator";
+import {DrawerNavigation} from "./DrawerNavigation";
 
 export type RootStackParams = {
   Login: undefined;
-  CharacterNavigator: undefined;
+  DrawerNavigation: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParams>();
@@ -27,7 +27,7 @@ export const StackNavigator = () => {
         </>
       ) : (
         <>
-          <Stack.Screen component={CharactersNavigator} name="CharacterNavigator" />
+          <Stack.Screen component={DrawerNavigation} name="DrawerNavigation" />
         </>
       )}
     </Stack.Navigator>

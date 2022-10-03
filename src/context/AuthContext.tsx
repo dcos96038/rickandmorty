@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {createContext, useReducer} from "react";
+import {createContext, useEffect, useReducer} from "react";
 
 import loginApi from "../api/loginApi";
 import {LoginForm, LoginResponse} from "../interfaces/authInterface";
@@ -31,6 +31,18 @@ export const AuthContext = createContext({} as AuthContextProps);
 
 export const AuthProvider = ({children}: ProviderProps) => {
   const [state, dispatch] = useReducer(authReducer, authInitialState);
+
+  const checkToken = async () => {
+    const token = await AsyncStorage.getItem("token");
+
+    if (!token) return dispatch({type: "logout"});
+
+    dispatch({type: "signIn", payload: {userId: state.userId, username: state.username}});
+  };
+
+  useEffect(() => {
+    checkToken();
+  }, []);
 
   const signIn = async ({email, password}: LoginForm) => {
     try {

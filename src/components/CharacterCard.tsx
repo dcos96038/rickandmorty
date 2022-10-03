@@ -1,9 +1,8 @@
-import React, {useEffect, useRef, useState} from "react";
-import {ActivityIndicator, Image, Text, View} from "react-native";
+import React from "react";
+import {Image, Text, View} from "react-native";
 import {TouchableOpacity} from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/MaterialIcons";
 import IonIcons from "react-native-vector-icons/Ionicons";
-import ImageColors from "react-native-image-colors";
 import {useNavigation} from "@react-navigation/native";
 import {StackNavigationProp} from "@react-navigation/stack";
 
@@ -15,43 +14,18 @@ interface Props {
 }
 
 const CharacterCard = ({character}: Props) => {
-  const [colorLoading, setColorLoading] = useState(true);
-  const [bgColor, setBgColor] = useState<string | undefined>("#686868");
-  const isMounted = useRef(true);
-
   const navigation = useNavigation<StackNavigationProp<CharactersStackParams, "Detail">>();
 
-  const hex2rgba = (hex: any, alpha = 0.5) => {
+  const hex2rgba = (hex: any, alpha = 0.8) => {
     const [r, g, b] = hex.match(/\w\w/g).map((x: any) => parseInt(x, 16));
 
     return `rgba(${r},${g},${b},${alpha})`;
   };
 
-  useEffect(() => {
-    ImageColors.getColors(character.image, {fallback: "grey"}).then((colors) => {
-      if (!isMounted) return;
-      if (colors.platform === "android") {
-        setColorLoading(false);
-        setBgColor(colors.dominant);
-      }
-    });
-
-    return () => {
-      isMounted.current = false;
-    };
-  }, [character.image]);
-
-  if (colorLoading)
-    return (
-      <View className="h-[250] w-[150] justify-center items-center">
-        <ActivityIndicator color="green" size={20} />
-      </View>
-    );
-
   return (
     <View
       className="h-[250] w-[150] p-1 m-4 rounded-lg border-1 drop-shadow-xl"
-      style={{backgroundColor: hex2rgba(bgColor)}}
+      style={{backgroundColor: hex2rgba("#02B0C9")}}
     >
       <TouchableOpacity
         activeOpacity={0.8}

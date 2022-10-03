@@ -10,9 +10,14 @@ export const useForm = <T extends Object>(initState: T) => {
     });
   };
 
+  const resetForm = () => {
+    setState(initState);
+  };
+
   return {
     ...state,
     form: state,
     onChange,
+    resetForm,
   };
 };

@@ -6,7 +6,7 @@ export interface AuthState {
 }
 
 export type AuthAction =
-  | {type: "signIn"; payload: {userId: string; username: string}}
+  | {type: "signIn"; payload: {userId: string | null; username: string | null}}
   | {type: "addError"; payload: string}
   | {type: "removeError"}
   | {type: "notAuthenticated"}

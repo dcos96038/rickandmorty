@@ -1,7 +1,7 @@
 import {StackScreenProps} from "@react-navigation/stack";
 import axios, {AxiosResponse} from "axios";
 import React, {useEffect, useState} from "react";
-import {Text, View, ScrollView, Image, Dimensions, Alert} from "react-native";
+import {Text, View, ScrollView, Image, Dimensions, Alert, TouchableOpacity} from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 
 import {EpisodeResponse} from "../interfaces/charactersInterface";
@@ -11,12 +11,10 @@ import LoadingScreen from "./LoadingScreen";
 
 interface Props extends StackScreenProps<CharactersStackParams, "Detail"> {}
 
-const width = Dimensions.get("screen").width;
-
-const DetailScreen = ({route}: Props) => {
+const DetailScreen = ({route, navigation}: Props) => {
   const [loadingDetails, setLoadingDetails] = useState(true);
-  const character = route.params.character;
   const [episodes, setEpisodes] = useState<AxiosResponse<EpisodeResponse, any>[]>([]);
+  const character = route.params.character;
 
   const getEpisodesData = async () => {
     try {
@@ -47,49 +45,64 @@ const DetailScreen = ({route}: Props) => {
 
   return (
     <>
-      <ScrollView className={`min-h-screen w-[${width}] bg-[#212125]`}>
-        <Text className="mt-5 text-2xl font-bold text-center text-white">{character?.name}</Text>
+      <View className="absolute z-50 p-1 bg-gray-700 border-2 border-gray-700 rounded-lg left-3 top-3 drop-shadow-3xl">
+        <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.pop()}>
+          <Icon color="#02B0C9" name="arrow-back-outline" size={30} />
+        </TouchableOpacity>
+      </View>
+      <ScrollView className={`min-h-screen bg-[#212125]`}>
         <View className="items-center mt-5">
-          <Image
-            className="w-[250] h-[250] rounded-full bottom-[8] right-2"
-            source={{uri: character.image}}
-          />
+          <Image className="w-[250] h-[250] rounded-full" source={{uri: character.image}} />
         </View>
-        <View className="p-2 m-4 bg-gray-600 rounded-lg shadow-2xl drop-shadow-3xl ">
-          <View className="flex-row">
-            <Text className="text-md font-semibold w-[100] text-white">Estado: </Text>
+        <Text className="mt-5 text-2xl font-bold text-center text-white">{character?.name}</Text>
+        <View className="p-2 m-4 bg-gray-600 rounded-lg drop-shadow-3xl">
+          <View className="flex-row items-center gap-2">
+            <Icon color="#02B0C9" name="alert-circle-outline" size={25} />
+            <Text className="text-xl font-semibold w-[100] text-white">Estado: </Text>
             <Text
-              className={`text-md font-semibold ${
+              className={`text-xl font-semibold ${
                 character.status === "Alive" ? "text-green-700" : "text-red-700"
               }`}
             >
               {character.status}
             </Text>
           </View>
-          <View className="flex-row">
-            <Text className="text-md font-semibold w-[100] text-white">Especie: </Text>
-            <Text className="font-semibold text-white text-md">{character.species}</Text>
+          <View className="flex-row items-center gap-2">
+            <Icon color="#02B0C9" name="body-outline" size={25} />
+
+            <Text className="text-xl font-semibold w-[100] text-white">Especie: </Text>
+            <Text className="text-xl font-semibold text-white">{character.species}</Text>
           </View>
-          <View className="flex-row">
-            <Text className="text-md font-semibold w-[100] text-white">Genero: </Text>
-            <Text className="font-semibold text-white text-md">{character.gender}</Text>
+          <View className="flex-row items-center gap-2">
+            <Icon
+              color="#02B0C9"
+              name={character.gender === "Male" ? "male-outline" : "female-outline"}
+              size={25}
+            />
+            <Text className="text-xl font-semibold w-[100] text-white">Genero: </Text>
+            <Text className="text-xl font-semibold text-white">{character.gender}</Text>
           </View>
-          <View className="flex-row">
-            <Text className="text-md font-semibold w-[100] text-white">Origen: </Text>
-            <Text className="font-semibold text-white text-md">{character.origin.name}</Text>
+          <View className="flex-row items-center gap-2">
+            <Icon color="#02B0C9" name="finger-print-outline" size={25} />
+            <Text className="text-xl font-semibold w-[100] text-white">Origen: </Text>
+            <Text className="text-xl font-semibold text-white">{character.origin.name}</Text>
           </View>
-          <View className="flex-row">
-            <Text className="text-md font-semibold w-[100] text-white">Location: </Text>
-            <Text className="font-semibold text-white text-md">{character.location.name}</Text>
+          <View className="flex-row items-center gap-2">
+            <Icon color="#02B0C9" name="location-outline" size={25} />
+            <Text className="text-xl font-semibold w-[100] text-white">Location: </Text>
+            <Text className="text-xl font-semibold text-white">{character.location.name}</Text>
           </View>
         </View>
 
         <View className="pb-4 m-4 bg-gray-600 rounded-lg drop-shadow-3xl">
-          <Text className="px-6 my-3 text-xl font-semibold text-white">Episodios: </Text>
+          <View className="flex-row gap-2 px-6 mt-2">
+            <Icon color="#02B0C9" name="map-outline" size={30} />
+            <Text className="my-3 text-3xl font-semibold text-white">Episodios: </Text>
+          </View>
           {episodes.map((episode) => (
             <View key={episode.data.id} className="flex-row items-center px-6 my-1">
-              <Icon color="green" name="chevron-forward-outline" size={20} />
-              <Text className="font-semibold text-white text-md">{episode.data.name}</Text>
+              <Icon color="#02B0C9" name="chevron-forward-outline" size={20} />
+              <Text className="text-xl font-semibold text-white">{episode.data.name}</Text>
             </View>
           ))}
         </View>

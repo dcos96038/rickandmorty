@@ -8,18 +8,41 @@ const useGetCharacters = () => {
   const [charactersList, setCharactersList] = useState<Character[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [errorMsg, setErrorMsg] = useState<string>("");
+  const [lastPage, setLastPage] = useState<boolean>(false);
+  const [firstPage, setFirstPage] = useState<boolean>(false);
+  const [currentPage, setCurrentPage] = useState("");
 
-  const nextPage = useRef("/character?page=1");
+  const nextPage = useRef("");
+  const prevPage = useRef("");
 
-  const getCharacters = async () => {
+  const getCharacters = async (type: string = "initial") => {
+    let page: string = "/character?page=1";
+
+    if (type === "next") {
+      page = nextPage.current;
+    }
+    if (type === "prev") {
+      page = prevPage.current;
+    }
+
     try {
-      const {data} = await rymApi.get<CharactersResponse>(nextPage.current);
+      const {data} = await rymApi.get<CharactersResponse>(page);
 
-      nextPage.current = data.info.next;
+      nextPage.current = data.info.next || "";
+      prevPage.current = data.info.prev || "";
 
-      console.log(data.info.next);
+      setLastPage(false);
+      setFirstPage(false);
 
-      setCharactersList([...charactersList, ...data.results]);
+      if (data.info.next === null) {
+        setLastPage(true);
+      }
+      if (data.info.prev === null) {
+        setFirstPage(true);
+      }
+
+      setCurrentPage(page.split("=")[1]);
+      setCharactersList(data.results);
       setLoading(false);
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -39,6 +62,9 @@ const useGetCharacters = () => {
     charactersList,
     loading,
     errorMsg,
+    firstPage,
+    lastPage,
+    currentPage,
   };
 };
 
