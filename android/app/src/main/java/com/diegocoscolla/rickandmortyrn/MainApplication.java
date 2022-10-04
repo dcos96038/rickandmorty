@@ -1,4 +1,5 @@
-package com.rickandmorty;
+// package com.rickandmorty;
+package com.diegocoscolla.rickandmortyrn;
 
 // react-native-splash-screen >= 0.3.1
 import org.devio.rn.splashscreen.SplashScreenReactPackage;
@@ -12,7 +13,7 @@ import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.config.ReactFeatureFlags;
 import com.facebook.soloader.SoLoader;
-import com.rickandmorty.newarchitecture.MainApplicationReactNativeHost;
+import com.diegocoscolla.rickandmortyrn.newarchitecture.MainApplicationReactNativeHost;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
@@ -77,7 +78,7 @@ public class MainApplication extends Application implements ReactApplication {
          We use reflection here to pick up the class that initializes Flipper,
         since Flipper library is not available in release mode
         */
-        Class<?> aClass = Class.forName("com.rickandmorty.ReactNativeFlipper");
+        Class<?> aClass = Class.forName("com.diegocoscolla.rickandmortyrn.ReactNativeFlipper");
         aClass
             .getMethod("initializeFlipper", Context.class, ReactInstanceManager.class)
             .invoke(null, context, reactInstanceManager);

@@ -1,4 +1,5 @@
-package com.rickandmorty;
+// package com.rickandmorty;
+package com.diegocoscolla.rickandmortyrn;
 
 import android.os.Bundle;
 import com.facebook.react.ReactActivity;

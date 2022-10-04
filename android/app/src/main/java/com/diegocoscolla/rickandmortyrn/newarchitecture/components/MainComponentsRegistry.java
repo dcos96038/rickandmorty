@@ -1,4 +1,4 @@
-package com.rickandmorty.newarchitecture.components;
+package com.diegocoscolla.rickandmortyrn.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

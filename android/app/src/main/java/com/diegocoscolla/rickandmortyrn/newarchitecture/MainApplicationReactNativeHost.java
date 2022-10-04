@@ -1,4 +1,4 @@
-package com.rickandmorty.newarchitecture;
+package com.diegocoscolla.rickandmortyrn.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.fabric.ReactNativeConfig;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.rickandmorty.BuildConfig;
-import com.rickandmorty.newarchitecture.components.MainComponentsRegistry;
-import com.rickandmorty.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import com.diegocoscolla.rickandmortyrn.BuildConfig;
+import com.diegocoscolla.rickandmortyrn.newarchitecture.components.MainComponentsRegistry;
+import com.diegocoscolla.rickandmortyrn.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 
