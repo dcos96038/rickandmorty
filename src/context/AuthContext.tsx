@@ -2,7 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {createContext, useEffect, useReducer} from "react";
 
 import loginApi from "../api/loginApi";
-import {LoginForm, LoginResponse} from "../interfaces/authInterface";
+import {GetUserResponse, LoginForm, LoginResponse, UserData} from "../interfaces/authInterface";
 
 import {authReducer, AuthState} from "./AuthReducer";
 
@@ -15,16 +15,18 @@ interface AuthContextProps {
   username: string | null;
   userId: string | null;
   status: "checking" | "authenticated" | "not-authenticated";
+  userData: UserData | null;
   signIn: (obj: LoginForm) => void;
   logout: () => void;
   removeError: () => void;
 }
 
 const authInitialState: AuthState = {
-  status: "authenticated",
+  status: "checking",
   userId: null,
   username: null,
   errorMsg: "",
+  userData: null,
 };
 
 export const AuthContext = createContext({} as AuthContextProps);
@@ -37,7 +39,14 @@ export const AuthProvider = ({children}: ProviderProps) => {
 
     if (!token) return dispatch({type: "logout"});
 
-    dispatch({type: "signIn", payload: {userId: state.userId, username: state.username}});
+    const resp = await loginApi.get<GetUserResponse>(`/user/${token}`);
+
+    const {mail} = resp.data.userData;
+
+    dispatch({
+      type: "signIn",
+      payload: {userId: token, username: mail, userData: resp.data.userData},
+    });
   };
 
   useEffect(() => {
@@ -46,17 +55,27 @@ export const AuthProvider = ({children}: ProviderProps) => {
 
   const signIn = async ({email, password}: LoginForm) => {
     try {
-      const {data} = await loginApi.post<LoginResponse>("/login", {mail: email, password});
+      dispatch({type: "setStatus", payload: "checking"});
+      const loginRespData = await loginApi.post<LoginResponse>("/login", {mail: email, password});
+      const userId = loginRespData.data.userId;
+      const username = loginRespData.data.userName;
 
-      dispatch({
-        type: "signIn",
-        payload: {
-          userId: data.userId,
-          username: data.userName,
-        },
-      });
+      if (loginRespData.status === 200) {
+        const userDataResp = await loginApi.get<GetUserResponse>(`/user/${userId}`);
 
-      await AsyncStorage.setItem("token", data.userId);
+        const {userData} = userDataResp.data;
+
+        dispatch({
+          type: "signIn",
+          payload: {
+            userId: userId,
+            username: username,
+            userData: userData,
+          },
+        });
+      }
+
+      await AsyncStorage.setItem("token", userId);
     } catch (error: any) {
       dispatch({
         type: "addError",

@@ -1,6 +1,6 @@
 import {StackScreenProps} from "@react-navigation/stack";
 import React, {useContext, useEffect} from "react";
-import {Alert, Keyboard, Text, TouchableOpacity, View} from "react-native";
+import {Keyboard, Text, TouchableOpacity, View} from "react-native";
 import {ScrollView, TextInput} from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 

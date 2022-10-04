@@ -1,13 +1,13 @@
 import {DrawerScreenProps} from "@react-navigation/drawer";
 import React, {useContext, useEffect, useState} from "react";
-import {View, Text, Alert, TextInput, TouchableOpacity, Keyboard} from "react-native";
+import {View, Text, TextInput, TouchableOpacity, Keyboard} from "react-native";
 import Toast from "react-native-toast-message";
 
 import loginApi from "../api/loginApi";
 import DrawerButton from "../components/DrawerButton";
 import {AuthContext} from "../context/AuthContext";
 import {useForm} from "../hooks/useForm";
-import {GetUserResponse, UserData, UserModificationResponse} from "../interfaces/authInterface";
+import {UserData, UserModificationResponse} from "../interfaces/authInterface";
 import {DrawerParams} from "../navigators/DrawerNavigation";
 
 import LoadingScreen from "./LoadingScreen";
@@ -15,9 +15,8 @@ import LoadingScreen from "./LoadingScreen";
 interface Props extends DrawerScreenProps<DrawerParams, "Profile"> {}
 
 const ProfileScreen = ({navigation}: Props) => {
-  const [userData, setUserData] = useState<UserData>();
-  const [loading, setLoading] = useState(true);
-  const {userId} = useContext(AuthContext);
+  const {userId, userData, status} = useContext(AuthContext);
+  const [formUserData, setFormUserData] = useState<UserData | null>();
   const {name, surname, phone, onChange, form, resetForm} = useForm({
     name: "",
     surname: "",
@@ -28,27 +27,13 @@ const ProfileScreen = ({navigation}: Props) => {
     navigation.openDrawer();
   };
 
-  const getUserData = async () => {
-    try {
-      const resp = await loginApi.get<GetUserResponse>(`/user/${userId}`);
-      const {data} = resp;
-
-      if (resp.status === 200) {
-        setUserData(data.userData);
-        setLoading(false);
-      }
-    } catch (error) {
-      Alert.alert("Error", "No se pudo obtener datos del perfil del usuario", [{text: "OK"}]);
-    }
-  };
-
   const onSubmit = async () => {
     try {
       const resp = await loginApi.put<UserModificationResponse>(`/user/${userId}`, form);
 
       if (resp.status === 200) {
         Toast.show({type: "success", text1: "Actualizado", text2: "Perfil actualizado con exito!"});
-        setUserData({
+        setFormUserData({
           name: resp.data.newUserData.name,
           surname: resp.data.newUserData.surname,
           phone: resp.data.newUserData.phone,
@@ -63,10 +48,10 @@ const ProfileScreen = ({navigation}: Props) => {
   };
 
   useEffect(() => {
-    getUserData();
+    setFormUserData(userData);
   }, []);
 
-  if (loading) return <LoadingScreen />;
+  if (status === "checking") return <LoadingScreen />;
 
   return (
     <View className="bg-[#212125] flex-1">
@@ -78,7 +63,7 @@ const ProfileScreen = ({navigation}: Props) => {
           autoCapitalize="words"
           autoCorrect={false}
           className="w-10/12 px-4 text-lg font-bold text-white border-2 border-[#02B0C9] rounded-md"
-          placeholder={userData?.name}
+          placeholder={formUserData?.name}
           placeholderTextColor="gray"
           value={name}
           onChangeText={(value) => onChange(value, "name")}
@@ -90,7 +75,7 @@ const ProfileScreen = ({navigation}: Props) => {
           autoCapitalize="words"
           autoCorrect={false}
           className="w-10/12 px-4 text-lg font-bold text-white border-2 border-[#02B0C9] rounded-md"
-          placeholder={userData?.surname}
+          placeholder={formUserData?.surname}
           placeholderTextColor="gray"
           value={surname}
           onChangeText={(value) => onChange(value, "surname")}
@@ -101,7 +86,7 @@ const ProfileScreen = ({navigation}: Props) => {
         <TextInput
           className="w-10/12 px-4 text-lg font-bold text-white border-2 border-[#02B0C9] rounded-md"
           keyboardType="phone-pad"
-          placeholder={userData?.phone}
+          placeholder={formUserData?.phone}
           placeholderTextColor="gray"
           value={phone}
           onChangeText={(value) => onChange(value, "phone")}
@@ -114,7 +99,7 @@ const ProfileScreen = ({navigation}: Props) => {
           editable={false}
           placeholder="ejemplo@ejemplo.com"
           placeholderTextColor="gray"
-          value={userData?.mail}
+          value={formUserData?.mail}
         />
       </View>
 
